@@ -64,7 +64,7 @@ async fn health_check_works() {
 #[tokio::test]
 async fn subscribe_returns_a_200_for_a_valid_form_data() {
     let app = spawn_app().await;
-    let mut config = get_configuration().expect("Failed tp read configuration");
+    let config = get_configuration().expect("Failed tp read configuration");
     let connection_string = config.database.connection_string();
 
     let mut connection = PgConnection::connect(&connection_string)
