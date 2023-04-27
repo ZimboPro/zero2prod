@@ -13,11 +13,14 @@ async fn main() -> Result<(), std::io::Error> {
     init_subscriber(subscriber);
 
     let configuration = get_configuration().expect("Failed to read configuration.");
-    let connection_pool =
-        PgPoolOptions::new().acquire_timeout(std::time::Duration::from_secs(2))
+    let connection_pool = PgPoolOptions::new()
+        .acquire_timeout(std::time::Duration::from_secs(2))
         .connect_lazy_with(configuration.database.with_db());
 
-    let listener = TcpListener::bind(format!("{}:{}", configuration.application.host, configuration.application.port))
-        .unwrap_or_else(|_| panic!("Port {} already is use", configuration.application.port));
+    let listener = TcpListener::bind(format!(
+        "{}:{}",
+        configuration.application.host, configuration.application.port
+    ))
+    .unwrap_or_else(|_| panic!("Port {} already is use", configuration.application.port));
     run(listener, connection_pool)?.await
 }
