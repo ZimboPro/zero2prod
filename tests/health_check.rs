@@ -1,9 +1,9 @@
 use std::net::TcpListener;
 
-use fake::Faker;
+
 use once_cell::sync::Lazy;
 
-use secrecy::Secret;
+
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use zero2prod::{
