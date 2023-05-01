@@ -71,6 +71,8 @@ jobs:
 
       - name: Run tests
         run: cargo test
+        env:
+          CARGO_HUSKY_DONT_INSTALL_HOOKS: true
 
   # `fmt` container job
   fmt:
@@ -153,3 +155,5 @@ jobs:
         run: SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Generate code coverage
         run: cargo install cargo-tarpaulin && cargo tarpaulin --verbose --workspace
+        env:
+          CARGO_HUSKY_DONT_INSTALL_HOOKS: true
