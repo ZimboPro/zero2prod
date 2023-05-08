@@ -5,23 +5,24 @@ use actix_web::{
     web::{self, Data},
     App, HttpServer,
 };
-use sqlx::{PgPool, postgres::PgPoolOptions};
+use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing_actix_web::TracingLogger;
 
 use crate::{
+    configuration::{DatabaseSettings, Settings},
     email_client::EmailClient,
-    routes::{health_check, subscribe}, configuration::{Settings, DatabaseSettings},
+    routes::{health_check, subscribe},
 };
 
 pub struct Application {
     port: u16,
-    server: Server
+    server: Server,
 }
 
 impl Application {
     pub async fn build(configuration: Settings) -> Result<Self, std::io::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
-    
+
         let sender_email = configuration
             .email_client
             .sender()
@@ -33,7 +34,7 @@ impl Application {
             configuration.email_client.authorization_token,
             timeout,
         );
-    
+
         let address = format!(
             "{}:{}",
             configuration.application.host, configuration.application.port
@@ -42,9 +43,7 @@ impl Application {
         let port = listener.local_addr().unwrap().port();
         let server = run(listener, connection_pool, email_client)?;
 
-        Ok(Self {
-            port, server
-        })
+        Ok(Self { port, server })
     }
 
     pub fn port(&self) -> u16 {
@@ -77,10 +76,8 @@ pub fn run(
     Ok(server)
 }
 
-
-
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
-    .acquire_timeout(std::time::Duration::from_secs(2))
-    .connect_lazy_with(configuration.with_db())
+        .acquire_timeout(std::time::Duration::from_secs(2))
+        .connect_lazy_with(configuration.with_db())
 }
