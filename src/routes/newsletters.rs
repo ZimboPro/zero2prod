@@ -1,7 +1,6 @@
 use actix_web::{web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
-use tracing::subscriber;
 
 use crate::{domain::SubscriberEmail, email_client::EmailClient};
 
