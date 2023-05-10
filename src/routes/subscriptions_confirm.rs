@@ -76,4 +76,3 @@ pub async fn get_subscriber_id_from_token(
   .await?;
   Ok(result.map(|r| r.subscriber_id))
 }
-
