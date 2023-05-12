@@ -1,6 +1,6 @@
 use actix_web::{error::InternalError, web, HttpResponse};
 use hmac::{Hmac, Mac};
-use reqwest::{header::LOCATION};
+use reqwest::header::LOCATION;
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
 
