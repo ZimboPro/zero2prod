@@ -12,9 +12,8 @@ use tracing_actix_web::TracingLogger;
 use crate::{
   configuration::{DatabaseSettings, Settings},
   email_client::EmailClient,
-  routes::{confirm, health_check, home, login, login_form, publish_newsletter, subscribe},
 };
-
+use crate::routes::{confirm, health_check, home, login, login_form, publish_newsletter, subscribe};
 #[derive(Clone)]
 pub struct HmacSecret(pub Secret<String>);
 
