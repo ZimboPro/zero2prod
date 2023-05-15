@@ -1,12 +1,6 @@
-use actix_web::{http::header::ContentType, web, HttpResponse};
+use actix_web::{http::header::ContentType, HttpResponse};
 use actix_web_flash_messages::IncomingFlashMessages;
 use std::fmt::Write;
-
-use crate::{
-  authentication::UserId,
-  session_state::TypedSession,
-  utils::{e500, see_other},
-};
 
 pub async fn change_password_form(
   flash_messages: IncomingFlashMessages,

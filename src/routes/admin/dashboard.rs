@@ -1,10 +1,10 @@
 use actix_web::{http::header::ContentType, web, HttpResponse};
 use anyhow::Context;
-use reqwest::header::LOCATION;
+
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::{authentication::UserId, session_state::TypedSession, utils::e500};
+use crate::{authentication::UserId, utils::e500};
 
 pub async fn admin_dashboard(
   pool: web::Data<PgPool>,
