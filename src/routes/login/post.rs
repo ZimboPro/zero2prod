@@ -1,5 +1,5 @@
-use actix_web::{error::InternalError, web, HttpResponse, cookie::Cookie};
-use hmac::{Hmac, Mac};
+use actix_web::{cookie::Cookie, error::InternalError, web, HttpResponse};
+use actix_web_flash_messages::FlashMessage;
 use reqwest::header::LOCATION;
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
@@ -42,9 +42,9 @@ pub async fn login(
           LoginError::UnexpectedError(e.into())
         }
       };
+      FlashMessage::error(e.to_string()).send();
       let response = HttpResponse::SeeOther()
         .insert_header((LOCATION, "/login"))
-        .cookie(Cookie::new("_flash", e.to_string()))
         .finish();
       Err(InternalError::from_response(e, response))
     }
