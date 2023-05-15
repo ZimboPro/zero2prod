@@ -1,13 +1,12 @@
-use actix_web::{cookie::Cookie, error::InternalError, web, HttpResponse};
+use actix_web::{error::InternalError, web, HttpResponse};
 use actix_web_flash_messages::FlashMessage;
 use reqwest::header::LOCATION;
-use secrecy::{ExposeSecret, Secret};
+use secrecy::Secret;
 use sqlx::PgPool;
 
 use crate::{
   authentication::{validate_credentials, Credentials},
   routes::error_chain_fmt,
-  startup::HmacSecret,
 };
 
 #[derive(serde::Deserialize)]
@@ -19,7 +18,6 @@ pub struct FormData {
 pub async fn login(
   form: web::Form<FormData>,
   pool: web::Data<PgPool>,
-  secret: web::Data<HmacSecret>,
 ) -> Result<HttpResponse, InternalError<LoginError>> {
   let credentials = Credentials {
     username: form.0.username,
