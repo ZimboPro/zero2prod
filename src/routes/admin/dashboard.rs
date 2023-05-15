@@ -1,4 +1,4 @@
-use actix_session::Session;
+
 use actix_web::{http::header::ContentType, web, HttpResponse};
 use anyhow::Context;
 use reqwest::header::LOCATION;
