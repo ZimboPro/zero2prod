@@ -57,7 +57,7 @@ features = [
 version = "0.11"
 default-features = false
 # We need the `json` feature flag to serialize/deserialize JSON payloads
-features = ["json", "rustls-tls"]
+features = ["json", "rustls-tls", "cookies"]
 
 # .cargo/config.toml
 # On Windows
