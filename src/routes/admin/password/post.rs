@@ -1,10 +1,11 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{error::InternalError, web, HttpResponse};
 use actix_web_flash_messages::FlashMessage;
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
+use uuid::Uuid;
 
 use crate::{
-  authentication::{validate_credentials, AuthError, Credentials},
+  authentication::{validate_credentials, AuthError, Credentials, UserId},
   routes::get_username,
   session_state::TypedSession,
   utils::{e500, see_other},
@@ -20,13 +21,9 @@ pub struct FormData {
 pub async fn change_password(
   form: web::Form<FormData>,
   pool: web::Data<PgPool>,
-  session: TypedSession,
+  user_id: web::ReqData<UserId>,
 ) -> Result<HttpResponse, actix_web::Error> {
-  let user_id = session.get_user_id().map_err(e500)?;
-  if user_id.is_none() {
-    return Ok(see_other("/login"));
-  };
-  let user_id = user_id.unwrap();
+  let user_id = user_id.into_inner();
   if form.new_password.expose_secret() != form.new_password_check.expose_secret() {
     FlashMessage::error("You entered two different new passwords - the field values must match.")
       .send();
@@ -34,7 +31,7 @@ pub async fn change_password(
   }
   // TODO password validation based on
   // https://github.com/OWASP/ASVS/blob/master/4.0/en/0x11-V2-Authentication.md#v21-password-security-requirements
-  let username = get_username(user_id, &pool).await.map_err(e500)?;
+  let username = get_username(*user_id, &pool).await.map_err(e500)?;
   let credentials = Credentials {
     username,
     password: form.0.current_password,
@@ -48,7 +45,7 @@ pub async fn change_password(
       AuthError::UnexpectedError(_) => Err(e500(e)),
     };
   }
-  crate::authentication::change_password(user_id, form.0.new_password, &pool)
+  crate::authentication::change_password(*user_id, form.0.new_password, &pool)
     .await
     .map_err(e500)?;
   FlashMessage::error("Your password has been changed.").send();
