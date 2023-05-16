@@ -17,7 +17,7 @@ use crate::{
   authentication::reject_anonymous_users,
   routes::{
     admin_dashboard, change_password, change_password_form, confirm, health_check, home, log_out,
-    login, login_form, publish_newsletter, subscribe,
+    login, login_form, publish_newsletter, publish_newsletter_form, subscribe,
   },
 };
 use crate::{
@@ -113,6 +113,8 @@ pub async fn run(
         web::scope("/admin")
           .wrap(from_fn(reject_anonymous_users))
           .route("/dashboard", web::get().to(admin_dashboard))
+          .route("/newsletters", web::get().to(publish_newsletter_form))
+          .route("/newsletters", web::post().to(publish_newsletter))
           .route("/password", web::get().to(change_password_form))
           .route("/password", web::post().to(change_password))
           .route("/logout", web::post().to(log_out)),
